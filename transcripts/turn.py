@@ -32,7 +32,7 @@ def main():
            "--permission-mode", "acceptEdits",
            "--allowedTools",
            "Bash(uv run:*) Bash(ls:*) Bash(cat:*) Bash(mkdir:*) Bash(find:*) Bash(wc:*) Bash(head:*) Bash(tail:*) "
-           "Read Write Edit Glob Grep Skill WebSearch WebFetch Task TodoWrite"]
+           "Read Write Edit Glob Grep Skill WebSearch WebFetch Task TodoWrite " + os.environ.get("BMAD_TOOLS_EXTRA", "")]
     if not new and sid_file.exists():
         cmd += ["--resume", sid_file.read_text().strip()]
     env = {k: v for k, v in os.environ.items() if k not in ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT")}
