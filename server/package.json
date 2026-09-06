@@ -2,15 +2,27 @@
   "name": "careerbridge-server",
   "version": "0.0.0",
   "private": true,
-  "description": "CareerBridge server business layer (stored enums, the posting and application state machines, and the S9 error vocabulary)",
+  "description": "CareerBridge server: config, persistence, business layer, and the presentation layer (Express 5)",
   "license": "UNLICENSED",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand",
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback --all",
+    "seed": "knex seed:run"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "dependencies": {
+    "express": "^5",
+    "knex": "^3",
+    "pg": "^8",
+    "pino": "^9",
+    "pino-http": "^10",
+    "dotenv": "^17",
+    "zod": "^4"
   },
   "devDependencies": {
-    "jest": "^30.5.1"
+    "jest": "^30",
+    "supertest": "^7"
   }
 }
