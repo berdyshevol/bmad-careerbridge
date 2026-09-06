@@ -6,3 +6,4 @@ node_modules/
 coverage/
 client/dist/
 backups/
+transcripts/**/*-raw.json
