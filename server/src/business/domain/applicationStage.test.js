@@ -46,7 +46,7 @@ function forbidden(from, to) {
   if (to === 'hired' && from !== 'offer') return ['FR-R4-3', 'skipped stage (hired only from offer)'];
   if (to === 'declined' && from !== 'offer') return ['FR-R4-3', 'declined only from offer'];
   if (from === 'offer' && to === 'rejected') {
-    return ['FR-R4-2', 'rejection is not allowed from offer; the FR-R6-3 fill cascade never needs it because S3 allows one open offer per posting'];
+    return ['FR-R4-3', 'rejection is not allowed from offer; the FR-R6-3 fill cascade never needs it because S3 allows one open offer per posting'];
   }
   return ['NFR-4', 'not in the PRD §3 map'];
 }

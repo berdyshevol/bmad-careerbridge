@@ -4,48 +4,58 @@
 // `code`, and optional `details`. The business layer never sets an HTTP status;
 // presentation/errors.js owns the one code-to-status mapping.
 
+// `code` is not a constructor parameter: a positional string would let any
+// caller mint an out-of-vocabulary code from outside the module. Each
+// concrete class hardcodes its own S9 code as a literal `this.code =`
+// assignment after calling super(), the same pattern InvalidTransitionError
+// and its RuleViolationError siblings already use.
 class BusinessError extends Error {
-  constructor(code, message, details) {
+  constructor(message, details) {
     super(message);
     this.name = new.target.name;
-    this.code = code;
     if (details !== undefined) this.details = details;
   }
 }
 
 class ValidationError extends BusinessError {
   constructor(message = 'Validation failed', details) {
-    super('validation_failed', message, details);
+    super(message, details);
+    this.code = 'validation_failed';
   }
 }
 
 class UnauthenticatedError extends BusinessError {
   constructor(message = 'Authentication required', details) {
-    super('unauthenticated', message, details);
+    super(message, details);
+    this.code = 'unauthenticated';
   }
 }
 
 class AccountSuspendedError extends BusinessError {
   constructor(message = 'This account is suspended', details) {
-    super('account_suspended', message, details);
+    super(message, details);
+    this.code = 'account_suspended';
   }
 }
 
 class ForbiddenError extends BusinessError {
   constructor(message = 'Not allowed', details) {
-    super('forbidden', message, details);
+    super(message, details);
+    this.code = 'forbidden';
   }
 }
 
 class NotFoundError extends BusinessError {
   constructor(message = 'Not found', details) {
-    super('not_found', message, details);
+    super(message, details);
+    this.code = 'not_found';
   }
 }
 
 class RuleViolationError extends BusinessError {
   constructor(message = 'This change is not allowed', details) {
-    super('rule_violation', message, details);
+    super(message, details);
+    this.code = 'rule_violation';
   }
 }
 

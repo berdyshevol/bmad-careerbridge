@@ -37,7 +37,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   epic-1: in-progress
   1-1-one-repository-two-workspaces-and-a-green-ci: backlog
-  1-2-stored-enums-and-the-two-state-machines: review
+  1-2-stored-enums-and-the-two-state-machines: done
   1-3-initial-schema-indexes-audit-trigger-seeds-and-test-support: backlog
   1-4-persistence-core-error-vocabulary-and-the-audit-and-notifica: backlog
   1-5-log-in-log-out-and-server-side-role-guards: backlog

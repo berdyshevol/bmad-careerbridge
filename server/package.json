@@ -2,7 +2,8 @@
   "name": "careerbridge-server",
   "version": "0.0.0",
   "private": true,
-  "description": "CareerBridge server (Express 5, Knex, PostgreSQL)",
+  "description": "CareerBridge server business layer (stored enums, the posting and application state machines, and the S9 error vocabulary)",
+  "license": "UNLICENSED",
   "scripts": {
     "test": "jest"
   },
