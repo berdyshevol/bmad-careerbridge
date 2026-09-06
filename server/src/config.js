@@ -33,7 +33,7 @@ assertRequired(process.env);
 // Number(x) || default silently swaps an explicit "0" or a typo'd value
 // (e.g. PORT=abc) for the default. Parse explicitly and fail loudly instead,
 // matching the fail-fast treatment given the required variables above.
-function parseNumericEnv(name, defaultValue) {
+function parseNumericEnv(name, defaultValue, { min, max } = {}) {
   const raw = process.env[name];
   if (raw === undefined || raw === '') {
     return defaultValue;
@@ -41,6 +41,9 @@ function parseNumericEnv(name, defaultValue) {
   const value = Number(raw);
   if (Number.isNaN(value)) {
     throw new Error(`Invalid numeric value for ${name}: ${JSON.stringify(raw)}`);
+  }
+  if ((min !== undefined && value < min) || (max !== undefined && value > max)) {
+    throw new Error(`${name} must be between ${min} and ${max}, got ${value}`);
   }
   return value;
 }
@@ -55,13 +58,13 @@ const logger = pino({
 const config = Object.freeze({
   databaseUrl: process.env.DATABASE_URL,
   sessionSecret: process.env.SESSION_SECRET,
-  sessionIdleHours: parseNumericEnv('SESSION_IDLE_HOURS', 8),
+  sessionIdleHours: parseNumericEnv('SESSION_IDLE_HOURS', 8, { min: 1 }),
   adminEmail: process.env.ADMIN_EMAIL,
   adminPassword: process.env.ADMIN_PASSWORD,
-  resumeMaxBytes: parseNumericEnv('RESUME_MAX_BYTES', 2097152),
+  resumeMaxBytes: parseNumericEnv('RESUME_MAX_BYTES', 2097152, { min: 1 }),
   tz: process.env.TZ || 'America/Chicago',
   seedDemo: process.env.SEED_DEMO === 'true',
-  port: parseNumericEnv('PORT', 3000),
+  port: parseNumericEnv('PORT', 3000, { min: 1, max: 65535 }),
   nodeEnv,
   isProduction: nodeEnv === 'production',
   logger,

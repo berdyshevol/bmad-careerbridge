@@ -32,4 +32,13 @@ npm run lint             # boundary lint (below) + eslint + prettier --check
 
 **Database:** PostgreSQL major **17**, pinned in exactly two places, `docker-compose.yml` and `.github/workflows/ci.yml` (ARCH-02).
 
+**Port 5432 already in use?** `docker-compose.yml` binds Postgres to `127.0.0.1:${POSTGRES_HOST_PORT:-5432}`. Pick a different host port and point the app at it:
+
+```bash
+POSTGRES_HOST_PORT=55432 npm run db:up
+# then set in .env: DATABASE_URL=postgres://careerbridge:careerbridge@localhost:55432/careerbridge
+```
+
+`docker compose` automatically loads `POSTGRES_HOST_PORT` from a `.env` file in the repo root (same directory as `docker-compose.yml`), so `cp .env.example .env` and editing that one value works too — no need to export it on the command line each time.
+
 **Validation:** **zod**, installed in both workspaces — one schema language usable in Express handlers and React forms alike `[ASSUMPTION]`.
