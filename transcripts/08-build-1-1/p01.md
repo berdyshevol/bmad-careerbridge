@@ -1,0 +1,9 @@
+/bmad-build Story 1.1 from _bmad-output/planning-artifacts/epics.md — "One repository, two workspaces, and a green CI"
+
+Build exactly this one story in this repository. Read first: the story text (Epic 1, Story 1.1, all five Given/When/Then blocks and the Touches list), `_bmad-output/implementation-artifacts/epic-1-context.md`, the architecture rules it cites (ARCH-02, 03, 05, 06, 09, 14, 16, 20, 22) in `_bmad-output/planning-artifacts/architecture/architecture-bmad-careerbridge-2026-09-05/ARCHITECTURE-SPINE.md`, SHAPES S11 (environment variables) and S14 (CI steps) in `SHAPES.md`, and `_bmad-output/implementation-artifacts/deferred-work.md` (the ARCH-12 import-boundary lint is deferred to this story).
+
+Our planning lead already wrote an implementation plan: `_bmad-output/implementation-artifacts/plan-1-1.md` (scope decision, 27 files in order, commands, tests, definition of done, risks with recommendations, 4-commit plan). Use it as the starting point for your plan; keep its decisions unless one conflicts with the spine or the story's acceptance criteria — if so, say which and why.
+
+Facts about this environment: macOS, Node 24.20, npm 11, Docker Desktop is running (`docker info` works; Postgres can run via docker compose). Plain JavaScript only, never TypeScript. Story 1.2 already exists under `server/src/business/` with 268 green Jest tests — they must stay green and those files must not change (adding the small `business/system/checkHealth.js` the plan recommends is fine). No Render/Neon accounts: deployment is Story 1.9, out of scope.
+
+Show me the plan and wait for my approval before writing code. After approval: implement, run lint and both test suites (health test against the docker-compose Postgres), review, fix, and commit locally per the plan's commit list, citing Story 1.1 and NFR IDs. Do not push.
