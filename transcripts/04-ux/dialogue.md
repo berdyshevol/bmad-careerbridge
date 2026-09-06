@@ -57,3 +57,39 @@ No web research, no creative tools, no external handoffs. The reviewer gate and 
 Review the A-UX list, hand the folder to Josh, and commit when you are happy with it. If you want the status set to final in this run instead, say so and I will flip it and log the finalization.
 
 <!-- turn 01 · 2026-09-05 21:13 · 396s · agent turns 28 · in 322 + cache 836879 / out 29513 tok · $3.73582975 -->
+
+
+## Turn 02 — Oleg
+
+Thanks — this is a good first cut for Josh. Two pushbacks and one confirmation, then leave it as **draft**; Josh owns UX and will run the Update with his changes.
+
+- **A-UX-1 — 30-second polling is too aggressive** for a free-tier host that sleeps: five users × 2 requests/min for a badge nobody watches. Make it **60 seconds, plus an immediate refetch after any mutation** the current user performs (TanStack Query invalidation already does that per ARCH-06). Note the value as a single constant so the team can tune it.
+- **A-UX-2 — a confirmation Dialog for *every* notifying action is too much friction** for the Recruiter queue, where advancing candidates is the main job. Confirm only the **irreversible** ones: reject, extend offer, accept/decline offer, withdraw, admin close/suspend. Advancing a Stage (Applied → Screening → Interview) is one click plus Snackbar with no undo — the state machine refuses backward moves anyway, so the Recruiter must be careful, and the wireframe should say so.
+- **A-UX-3 (cap counter on Job Detail) — confirmed**, keep it; it is one of the UJ-3 proof points.
+
+Apply those two changes to EXPERIENCE.md and the Recruiter queue wireframe, log them in the memlog, keep `status: draft`, and tell me the final paths. No reviewer gate, no polish pass — Josh will decide what to keep.
+
+
+## Turn 02 — Agent
+
+Both pushbacks are applied, the confirmation is recorded, and all three files stay at `status: draft`.
+
+**What changed**
+
+- **A-UX-1, polling.** The unread-count rule in EXPERIENCE.md now says 60 seconds, held in one constant named `UNREAD_POLL_MS` in the client config file, with an immediate refetch after any mutation by the current user through TanStack Query invalidation. The "decided against 30 s because the free host sleeps" line is in the text for Josh.
+- **A-UX-2, confirmations.** The confirmation rule now lists only irreversible actions: reject, extend offer, accept or decline offer, withdraw, administrator close, suspend, reject request. Advancing a Stage and approving are one click plus Snackbar with no undo, with the FR-R4-3 forward-only rule cited. The Interaction Primitives line and the Open Items list were updated to match.
+- **Recruiter queue wireframe.** Added a caption under the Stage filter reading "Advancing cannot be undone; the pipeline only moves forward", and a rule block stating that Advance is one click with a Snackbar while Record interview and Record outcome open a Dialog only because they take fields.
+- **A-UX-3.** Marked confirmed in the refusal table, the UJ-3 climax step, and the Open Items list.
+
+**Memlog** has two `override` entries with your reasons, one `decision` for A-UX-3, and an `event` noting that Josh runs Update mode next. Still open for Josh: A-UX-4 (Tabs for the two Admin queues), A-UX-5 (palette and Roboto), A-UX-6 (landing pages), A-UX-7 (inline queue actions).
+
+**Final paths**, all under `_bmad-output/planning-artifacts/ux-designs/ux-bmad-careerbridge-2026-09-05/`:
+
+- `EXPERIENCE.md`
+- `DESIGN.md`
+- `wireframes/wireframes.md`
+- `.memlog.md` (decision log Josh's Update run will reload)
+
+Nothing is committed; the folder shows as untracked in git.
+
+<!-- turn 02 · 2026-09-05 21:20 · 61s · agent turns 10 · in 34 + cache 127773 / out 4734 tok · $2.46946325 -->

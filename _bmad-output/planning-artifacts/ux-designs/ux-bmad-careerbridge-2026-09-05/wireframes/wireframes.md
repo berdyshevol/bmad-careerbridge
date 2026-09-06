@@ -165,6 +165,7 @@ Desktop, Sam at Acme Waco:
 │ h1 Junior Software Developer   [● Live]   Expires Oct 15   [Edit] [Close…]  │  FR-R2-4, FR-R2-6
 │                                                                              │
 │ Stage: [All ▾]   4 applications                                              │  filter (FR-R3-1)
+│ Advancing cannot be undone; the pipeline only moves forward.                 │  caption (FR-R4-3)
 │ ┌──────────────┬───────────────┬──────────────┬───────────────────────────┐ │
 │ │ Applicant    │ Stage         │ Submitted    │ Actions        [A-UX-7]   │ │  ResponsiveTable
 │ ├──────────────┼───────────────┼──────────────┼───────────────────────────┤ │
@@ -186,8 +187,11 @@ Rules the buttons follow (client hides; server refuses regardless, NFR-1/NFR-4):
   offer      → "Offer extended, awaiting applicant" (no buttons; FR-R4-2 excludes rejecting at Offer)
   terminal   → —
   Posting filled/closed → only Reject remains (FR-R4-4); banner "This posting is filled."
+Advance → … is ONE click, no Dialog: Snackbar "Devon Reyes moved to Screening" with no undo. Helper text under
+  the table header: "Advancing cannot be undone; the pipeline only moves forward." (FR-R4-3; A-UX-2 settled)
 Reject opens ReasonDialog: multiline "Reason (shown to the applicant)", min 10 chars, [Reject] disabled until valid.
 Extend offer Dialog: "Extend an offer to Maria Lopez? Only one offer can be open per posting." [Cancel] [Extend offer]
+Record interview / Record outcome: inline form in a Dialog because they take fields, not as a confirmation.
 Refused transition (invalid_transition / concurrent_change / offer_already_open): Alert(error) above the table
   with the server message verbatim, table refetches.
 Privacy: this page never lists another Organization's Postings; a foreign URL renders the forbidden page (FR-R3-3).

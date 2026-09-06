@@ -74,14 +74,14 @@ Surface closure: every FR in the PRD lands on one row above; every row is reache
 
 My Applications lists each row as Posting title, Organization, `StageChip`, "changed ‹relative time›" (FR-A4-1). The detail page shows the Stepper, then **History** as a timeline read from audit rows: "‹Stage from› → ‹Stage to› · by recruiter · ‹timestamp›", the reason inline (FR-A4-2). Withdraw is hidden at Offer and in terminal Stages; if the server still refuses, the alert below applies (FR-A4-4).
 
-**Unread count (FR-A5-1).** MUI `Badge` on the bell shows the number from the unread-count query, polled every 30 s `[ASSUMPTION A-UX-1]` and refetched after any mutation. Zero hides the Badge; above 99 shows "99+". Accessible name "Notifications, 3 unread". Opening `/notifications` lists newest first; unread rows are bold with a dot icon; clicking a row marks it read and follows its link (FR-A5-2). Visitors have no bell.
+**Unread count (FR-A5-1).** MUI `Badge` on the bell shows the number from the unread-count query, polled every 60 s (one named constant `UNREAD_POLL_MS` in `client/src/config.js`, so the team can tune it) and refetched immediately after any mutation the current user performs through TanStack Query invalidation (ARCH-06). Decided against 30 s: on a free host that sleeps, five users polling twice a minute for a badge nobody watches is the wrong trade (A-UX-1, settled by Oleg). Zero hides the Badge; above 99 shows "99+". Accessible name "Notifications, 3 unread". Opening `/notifications` lists newest first; unread rows are bold with a dot icon; clicking a row marks it read and follows its link (FR-A5-2). Visitors have no bell.
 
 **Refusals (NFR-4, NFR-8).** One `<ErrorAlert>` renders the server message verbatim; the code decides placement. The client hides actions that are invalid for the current Stage but never trusts that (NFR-1).
 
 | Code (S9) | Where | Treatment |
 | --- | --- | --- |
 | `validation_failed` | any form | Helper text under each field in `details`; focus moves to the first error |
-| `application_cap_reached` | Job Detail | Alert "You have 5 of 5 active applications. Withdraw one to apply." with count and cap from `details` (FR-A3-4); Apply stays enabled so the rule is the server's |
+| `application_cap_reached` | Job Detail | Alert "You have 5 of 5 active applications. Withdraw one to apply." with count and cap from `details` (FR-A3-4); Apply stays enabled so the rule is the server's; the "N of cap" hint above the button is confirmed (A-UX-3, UJ-3 proof point) |
 | `profile_incomplete` | Job Detail | Alert listing `missing`, button "Complete profile" to `/me/profile` (FR-A3-2) |
 | `duplicate_application` | Job Detail | Apply replaced by "You applied on ‹date›" linking to the Application |
 | `forbidden` | any | Full-page "You do not have access to this page" with a link home; no record fields rendered (FR-R3-3) |
@@ -90,7 +90,7 @@ My Applications lists each row as Posting title, Organization, `StageChip`, "cha
 | `account_suspended`, `unauthenticated` | global | Redirect to `/login` with a one-line reason |
 | `internal` | any | "Something went wrong. Try again." with a Retry button |
 
-**Confirmation** `[ASSUMPTION A-UX-2]`: every action that notifies someone or ends a path opens a Dialog (reject with reason field, extend offer, accept, decline, withdraw, close Posting, suspend, reject request). Reason fields enforce the minimum length inline (10 characters, FR-R4-2) and the Dialog's primary button stays disabled until valid. Approvals are one click followed by a Snackbar.
+**Confirmation** (A-UX-2, settled by Oleg): only **irreversible** actions open a Dialog: reject (with reason field), extend offer, accept offer, decline offer, withdraw, administrator close Posting, suspend, reject request. Reason fields enforce the minimum length inline (10 characters, FR-R4-2) and the Dialog's primary button stays disabled until valid. Advancing a Stage (Applied → Screening → Interview) and approving are one click followed by a Snackbar with no undo; the state machine refuses backward moves (FR-R4-3), so the Recruiter queue says so in its helper text and the Recruiter is expected to be careful. Decided against confirming every notifying action: advancing candidates is the Recruiter's main job and a Dialog per click is friction on the golden path.
 
 ## Voice and Tone
 
@@ -128,7 +128,7 @@ My Applications lists each row as Posting title, Organization, `StageChip`, "cha
 
 ## Interaction Primitives
 
-Mouse and touch first; no shortcuts beyond browser defaults. Tap targets at least 44 px on the public and Applicant surfaces. Lists paginate (20 per page, S10); no infinite scroll. Dialogs stack one level. Destructive or notifying actions confirm; approvals do not.
+Mouse and touch first; no shortcuts beyond browser defaults. Tap targets at least 44 px on the public and Applicant surfaces. Lists paginate (20 per page, S10); no infinite scroll. Dialogs stack one level. Irreversible actions confirm; advances and approvals do not.
 
 ## Accessibility Floor (NFR-9)
 
@@ -178,10 +178,10 @@ Each step names the screen and the FR it realizes. Names are the PRD's seed cast
 2. Any visitor's `/` shows neither the Pending Approval nor the expired Acme Posting; opening the expired one by URL gives "This posting is not available" (FR-A2-1, FR-R2-3, FR-M2-4).
 3. Devon, holding 5 active Applications, clicks Apply on a sixth; Alert "You have 5 of 5 active applications" (FR-A3-4).
 4. Administrator sets the cap to 6 on `/admin/settings` (FR-M4-1).
-5. **Climax.** Devon clicks Apply again without reloading; it succeeds, and the hint reads "6 of 6 active applications" `[ASSUMPTION A-UX-3]`.
+5. **Climax.** Devon clicks Apply again without reloading; it succeeds, and the hint reads "6 of 6 active applications" (A-UX-3, confirmed).
 
 ## Open Items for Josh
 
-- A-UX-1..6 above.
+- Settled by Oleg on 2026-09-05: A-UX-1 (60 s poll plus refetch after own mutations), A-UX-2 (confirm irreversible actions only), A-UX-3 (cap hint kept). Still open: A-UX-4, A-UX-5, A-UX-6, A-UX-7.
 - Whether the Recruiter queue offers inline row actions (advance, reject) or only from the detail page; the wireframe shows inline `[ASSUMPTION A-UX-7]`.
 - Whether "Withdraw" needs a reason field; the PRD does not ask for one, so the Dialog has none.
