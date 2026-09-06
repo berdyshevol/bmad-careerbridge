@@ -1,0 +1,15 @@
+node_modules
+client/dist
+coverage
+package-lock.json
+_bmad
+_bmad-output
+inputs
+transcripts
+.claude
+
+# Story 1.2's business layer: do not touch (its 268 tests must stay green,
+# and reformatting counts as touching).
+server/src/business/errors.js
+server/src/business/errors.test.js
+server/src/business/domain/
