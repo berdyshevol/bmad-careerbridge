@@ -2,8 +2,9 @@
 title: 'Story 1.2: Stored enums and the two state machines'
 type: 'feature'
 created: '2026-09-05'
-status: 'draft'
+status: 'in-progress'
 route: 'dispatch'
+baseline_commit: '8929ccdf0afac747e74966c8e6c70585bdc105bc'
 review_loop_iteration: 0
 context: []
 ---
@@ -22,6 +23,8 @@ context: []
 - Posting map is keyed over `POSTING_STATUS_EFFECTIVE` (7 values, `expired` included as a source, never as a target). Application map over `APPLICATION_STAGE` (8 values).
 - Unknown status/stage strings passed to either assertion throw `InvalidTransitionError` too, with a message naming the unknown value.
 - Test names carry the FR IDs the edge evidences (see matrix) and `NFR-4` on every state-machine test.
+- (Human, at approval) Record the CommonJS rationale in one line, in a `"comment"` field of `server/package.json` or a short `server/README.md`, so Story 1.1 does not reopen it.
+- (Human, at approval) Each state-machine module gets one dedicated unknown-value test with `NFR-4` in its name.
 
 ## Boundaries & Constraints
 
@@ -54,6 +57,7 @@ Repository has no application code yet (only `_bmad*`, `inputs/`, `transcripts/`
 
 **Execution:**
 - [ ] `server/package.json` -- `name careerbridge-server`, `private`, `"type"` omitted (CommonJS), `scripts.test = "jest"`, `jest.testEnvironment = "node"`, devDependency `jest` (latest via `npm install`); commit `server/package-lock.json` -- minimum of Story 1.1 so tests run.
+- [ ] `server/README.md` -- three to five lines: how to run the tests, and the one-line CommonJS rationale -- so Story 1.1 does not reopen the module-system choice.
 - [ ] `server/src/business/errors.js` -- S9 classes: `ValidationError`, `UnauthenticatedError`, `AccountSuspendedError`, `ForbiddenError`, `NotFoundError`, `RuleViolationError` and subclasses `InvalidTransitionError`, `ConcurrentChangeError`, `DuplicateApplicationError`, `OfferAlreadyOpenError`, `ApplicationCapReachedError`, `ProfileIncompleteError`; each sets `name`, `code`, optional `details` -- created here per the story.
 - [ ] `server/src/business/domain/enums.js` -- frozen exports `POSTING_STATUS`, `POSTING_STATUS_EFFECTIVE`, `APPLICATION_STAGE`, `ACTIVE_STAGES`, `ACCOUNT_STATUS`, `ACCOUNT_ROLE`, `MEMBERSHIP_STATUS`, `INTERVIEW_OUTCOME`, `EMPLOYMENT_TYPE` -- S1 vocabulary.
 - [ ] `server/src/business/domain/postingStatus.js` -- `POSTING_TRANSITIONS` (frozen map from → frozen array), `assertTransition`, `assertPostingAllows` -- ARCH-12.

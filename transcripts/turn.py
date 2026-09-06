@@ -28,6 +28,7 @@ def main():
     tag = f"{n:02d}"
 
     cmd = ["claude", "-p", prompt, "--output-format", "json",
+           "--model", "claude-sonnet-5",  # economy mode from 2026-09-05 22:45: all remaining BMAD turns on Sonnet
            "--permission-mode", "acceptEdits",
            "--allowedTools",
            "Bash(uv run:*) Bash(ls:*) Bash(cat:*) Bash(mkdir:*) Bash(find:*) Bash(wc:*) Bash(head:*) Bash(tail:*) "
