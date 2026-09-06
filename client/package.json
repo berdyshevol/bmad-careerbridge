@@ -1,0 +1,27 @@
+{
+  "name": "careerbridge-client",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "^19",
+    "react-dom": "^19",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "vite": "^7",
+    "@vitejs/plugin-react": "^5",
+    "jest": "^30",
+    "jest-environment-jsdom": "^30",
+    "babel-jest": "^30",
+    "@babel/preset-env": "^7",
+    "@babel/preset-react": "^7",
+    "@testing-library/react": "^16",
+    "@testing-library/jest-dom": "^6"
+  }
+}
