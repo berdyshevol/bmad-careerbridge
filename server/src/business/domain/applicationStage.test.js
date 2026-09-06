@@ -24,6 +24,9 @@ const ALLOWED = [
 const PIPELINE = ['applied', 'screening', 'interview', 'offer'];
 const TERMINAL = APPLICATION_STAGE.filter((s) => !ACTIVE_STAGES.includes(s));
 
+// Messages name stages in words (underscores become spaces).
+const spoken = (value) => String(value).replace(/_/g, ' ');
+
 function allowedTag(from, to) {
   const row = ALLOWED.find(([f, t]) => f === from && t === to);
   return row ? row[2] : null;
@@ -42,7 +45,9 @@ function forbidden(from, to) {
   if (ti !== -1 && ti > fi + 1) return ['FR-R4-3', 'skipped stage'];
   if (to === 'hired' && from !== 'offer') return ['FR-R4-3', 'skipped stage (hired only from offer)'];
   if (to === 'declined' && from !== 'offer') return ['FR-R4-3', 'declined only from offer'];
-  if (from === 'offer' && to === 'rejected') return ['FR-R4-2', 'rejection is not allowed from offer'];
+  if (from === 'offer' && to === 'rejected') {
+    return ['FR-R4-2', 'rejection is not allowed from offer; the FR-R6-3 fill cascade never needs it because S3 allows one open offer per posting'];
+  }
   return ['NFR-4', 'not in the PRD §3 map'];
 }
 
@@ -88,17 +93,30 @@ describe('assertTransition(from, to): all 64 cells of the 8×8 stage matrix', ()
         });
       } else {
         const [fr, why] = forbidden(from, to);
-        test(`NFR-4 ${fr} forbids ${from} -> ${to} (${why}) with InvalidTransitionError naming both stages`, () => {
-          expectInvalidTransition(() => assertTransition(from, to), from, to);
+        test(`NFR-4 ${fr} forbids ${from} -> ${to} (${why}) with InvalidTransitionError naming both stages in words`, () => {
+          expectInvalidTransition(() => assertTransition(from, to), spoken(from), spoken(to));
         });
       }
     }
   }
 });
 
+describe('exact message template (from and to in the right order, stages in words)', () => {
+  test('NFR-4 FR-R4-3 assertTransition("interview", "screening") reads "An application in stage interview cannot move to screening"', () => {
+    expect(() => assertTransition('interview', 'screening')).toThrow(
+      'An application in stage interview cannot move to screening',
+    );
+  });
+});
+
 describe('unknown values', () => {
   test('NFR-4 assertTransition rejects an unknown source stage with InvalidTransitionError naming the value', () => {
     expectInvalidTransition(() => assertTransition('bogus', 'screening'), 'bogus');
+  });
+
+  test('NFR-4 prototype keys ("constructor", "__proto__") are unknown values, not stages', () => {
+    expectInvalidTransition(() => assertTransition('constructor', 'screening'), 'constructor');
+    expectInvalidTransition(() => assertTransition('applied', '__proto__'), '__proto__');
   });
 
   test('NFR-4 assertTransition rejects an unknown target stage with InvalidTransitionError naming the value', () => {

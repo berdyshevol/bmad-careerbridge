@@ -17,6 +17,12 @@ const POSTING_TRANSITIONS = Object.freeze({
   expired: Object.freeze(['filled']),
 });
 
+// Renders a stored enum value in words for messages ("pending_approval" ->
+// "pending approval"). Unknown-value messages quote the raw value instead.
+function spoken(value) {
+  return String(value).replace(/_/g, ' ');
+}
+
 function article(word) {
   return /^[aeiou]/.test(word) ? 'An' : 'A';
 }
@@ -43,7 +49,7 @@ function assertTransition(from, to) {
   assertKnownStatus(to);
   if (!POSTING_TRANSITIONS[from].includes(to)) {
     throw new InvalidTransitionError(
-      `${article(from)} ${from} posting cannot become ${to}`,
+      `${article(from)} ${spoken(from)} posting cannot become ${spoken(to)}`,
     );
   }
 }
@@ -59,7 +65,7 @@ function assertPostingAllows(postingEffectiveStatus, toStage) {
   const blocked = postingEffectiveStatus === 'filled' || postingEffectiveStatus === 'closed';
   if (blocked && toStage !== 'rejected') {
     throw new InvalidTransitionError(
-      `${article(postingEffectiveStatus)} ${postingEffectiveStatus} posting does not allow an application to move to ${toStage}; only rejected is allowed`,
+      `${article(postingEffectiveStatus)} ${spoken(postingEffectiveStatus)} posting does not allow an application to move to ${spoken(toStage)}; only rejected is allowed`,
     );
   }
 }

@@ -2,7 +2,7 @@
   "name": "careerbridge-server",
   "version": "0.0.0",
   "private": true,
-  "description": "CareerBridge server (Express 5, Knex, PostgreSQL). CommonJS: ARCH-03's require('knex') lint greps and ARCH-22's Jest-plus-supertest setup assume it; no ESM.",
+  "description": "CareerBridge server (Express 5, Knex, PostgreSQL)",
   "scripts": {
     "test": "jest"
   },

@@ -19,6 +19,9 @@ const ALLOWED = [
 
 const TERMINAL = ['filled', 'closed'];
 
+// Messages name states in words: "pending_approval" -> "pending approval".
+const spoken = (value) => String(value).replace(/_/g, ' ');
+
 function allowedTag(from, to) {
   const row = ALLOWED.find(([f, t]) => f === from && t === to);
   return row ? row[2] : null;
@@ -71,8 +74,8 @@ describe('assertTransition(from, to): all 49 cells of the 7×7 effective-status 
           expect(assertTransition(from, to)).toBeUndefined();
         });
       } else {
-        test(`NFR-4 forbids ${from} -> ${to} (${forbiddenReason(from, to)}) with InvalidTransitionError naming both statuses`, () => {
-          expectInvalidTransition(() => assertTransition(from, to), from, to);
+        test(`NFR-4 forbids ${from} -> ${to} (${forbiddenReason(from, to)}) with InvalidTransitionError naming both statuses in words`, () => {
+          expectInvalidTransition(() => assertTransition(from, to), spoken(from), spoken(to));
         });
       }
     }
@@ -84,8 +87,8 @@ describe('assertPostingAllows(effectiveStatus, toStage): all 56 cells of the 7×
     for (const stage of APPLICATION_STAGE) {
       const blocked = TERMINAL.includes(status) && stage !== 'rejected';
       if (blocked) {
-        test(`NFR-4 FR-R4-4 ${status} posting refuses stage change to ${stage} with InvalidTransitionError naming the status and the stage`, () => {
-          expectInvalidTransition(() => assertPostingAllows(status, stage), status, stage);
+        test(`NFR-4 FR-R4-4 ${status} posting refuses stage change to ${stage} with InvalidTransitionError naming the status and the stage in words`, () => {
+          expectInvalidTransition(() => assertPostingAllows(status, stage), spoken(status), spoken(stage));
         });
       } else {
         const why = TERMINAL.includes(status)
@@ -101,9 +104,35 @@ describe('assertPostingAllows(effectiveStatus, toStage): all 56 cells of the 7×
   }
 });
 
+describe('exact message templates (from and to in the right order, states in words)', () => {
+  test('NFR-4 assertTransition("live", "draft") reads "A live posting cannot become draft"', () => {
+    expect(() => assertTransition('live', 'draft')).toThrow('A live posting cannot become draft');
+  });
+
+  test('NFR-4 assertTransition("expired", "closed") reads "An expired posting cannot become closed"', () => {
+    expect(() => assertTransition('expired', 'closed')).toThrow('An expired posting cannot become closed');
+  });
+
+  test('NFR-4 assertTransition("pending_approval", "draft") names the status in words', () => {
+    expect(() => assertTransition('pending_approval', 'draft')).toThrow('A pending approval posting cannot become draft');
+  });
+
+  test('NFR-4 FR-R4-4 assertPostingAllows("filled", "offer") reads the full refusal sentence', () => {
+    expect(() => assertPostingAllows('filled', 'offer')).toThrow(
+      'A filled posting does not allow an application to move to offer; only rejected is allowed',
+    );
+  });
+});
+
 describe('unknown values', () => {
   test('NFR-4 assertTransition rejects an unknown source status with InvalidTransitionError naming the value', () => {
     expectInvalidTransition(() => assertTransition('bogus', 'live'), 'bogus');
+  });
+
+  test('NFR-4 prototype keys ("constructor", "__proto__") are unknown values, not statuses', () => {
+    expectInvalidTransition(() => assertTransition('constructor', 'live'), 'constructor');
+    expectInvalidTransition(() => assertTransition('live', '__proto__'), '__proto__');
+    expectInvalidTransition(() => assertPostingAllows('constructor', 'applied'), 'constructor');
   });
 
   test('NFR-4 assertTransition rejects an unknown target status with InvalidTransitionError naming the value', () => {

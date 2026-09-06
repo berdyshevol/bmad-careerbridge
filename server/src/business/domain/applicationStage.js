@@ -7,6 +7,10 @@
 const { APPLICATION_STAGE } = require('./enums');
 const { InvalidTransitionError } = require('../errors');
 
+// `offer -> rejected` is deliberately absent: FR-R6-3's fill cascade rejects
+// every other Active Application, but S3's one-open-offer partial index
+// guarantees the hired Application was the only one in `offer`, so the cascade
+// only ever moves applied/screening/interview to rejected.
 const APPLICATION_TRANSITIONS = Object.freeze({
   applied: Object.freeze(['screening', 'rejected', 'withdrawn']),
   screening: Object.freeze(['interview', 'rejected', 'withdrawn']),
@@ -17,6 +21,12 @@ const APPLICATION_TRANSITIONS = Object.freeze({
   withdrawn: Object.freeze([]),
   declined: Object.freeze([]),
 });
+
+// Renders a stored enum value in words for messages ("no_show" -> "no show").
+// Unknown-value messages quote the raw value instead.
+function spoken(value) {
+  return String(value).replace(/_/g, ' ');
+}
 
 function assertKnownStage(value) {
   if (!APPLICATION_STAGE.includes(value)) {
@@ -33,7 +43,7 @@ function assertTransition(from, to) {
   assertKnownStage(to);
   if (!APPLICATION_TRANSITIONS[from].includes(to)) {
     throw new InvalidTransitionError(
-      `An application in stage ${from} cannot move to ${to}`,
+      `An application in stage ${spoken(from)} cannot move to ${spoken(to)}`,
     );
   }
 }

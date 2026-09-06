@@ -14,7 +14,7 @@ class BusinessError extends Error {
 }
 
 class ValidationError extends BusinessError {
-  constructor(message, details) {
+  constructor(message = 'Validation failed', details) {
     super('validation_failed', message, details);
   }
 }
@@ -44,46 +44,52 @@ class NotFoundError extends BusinessError {
 }
 
 class RuleViolationError extends BusinessError {
-  constructor(message, details, code = 'rule_violation') {
-    super(code, message, details);
+  constructor(message = 'This change is not allowed', details) {
+    super('rule_violation', message, details);
   }
 }
 
 class InvalidTransitionError extends RuleViolationError {
-  constructor(message, details) {
-    super(message, details, 'invalid_transition');
+  constructor(message = 'This state change is not allowed', details) {
+    super(message, details);
+    this.code = 'invalid_transition';
   }
 }
 
 class ConcurrentChangeError extends RuleViolationError {
   constructor(message = 'The record changed since it was read; reload and try again', details) {
-    super(message, details, 'concurrent_change');
+    super(message, details);
+    this.code = 'concurrent_change';
   }
 }
 
 class DuplicateApplicationError extends RuleViolationError {
   constructor(message = 'An open application to this posting already exists', details) {
-    super(message, details, 'duplicate_application');
+    super(message, details);
+    this.code = 'duplicate_application';
   }
 }
 
 class OfferAlreadyOpenError extends RuleViolationError {
   constructor(message = 'Another application to this posting already has an open offer', details) {
-    super(message, details, 'offer_already_open');
+    super(message, details);
+    this.code = 'offer_already_open';
   }
 }
 
 class ApplicationCapReachedError extends RuleViolationError {
   // details: { count, cap }
-  constructor(message, details) {
-    super(message, details, 'application_cap_reached');
+  constructor(message = 'The application cap has been reached', details) {
+    super(message, details);
+    this.code = 'application_cap_reached';
   }
 }
 
 class ProfileIncompleteError extends RuleViolationError {
   // details: { missing: [] }
-  constructor(message, details) {
-    super(message, details, 'profile_incomplete');
+  constructor(message = 'The profile is incomplete', details) {
+    super(message, details);
+    this.code = 'profile_incomplete';
   }
 }
 
