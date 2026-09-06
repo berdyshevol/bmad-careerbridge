@@ -34,7 +34,7 @@ Team-confirmed by Oleg on 2026-09-05 after the fast-path draft; three were overt
 | ID | Where | Rule |
 | --- | --- | --- |
 | A-1 | FR-A1-2 | Profile fields: name, phone, location, headline, education, summary |
-| A-2 | FR-A1-3 | Resume is PDF only, at most 5 MB |
+| A-2 | FR-A1-3 | Resume is PDF only, at most 5 MB. **Architecture proposes 2 MB** (ARCH-17: resumes stored in Postgres on Neon's free tier, about 0.5 GB); team to confirm, then update FR-A1-3 and Q-006 |
 | A-3 | FR-A2-3 | Filters: keyword, category, location only |
 | A-4 | FR-A3-1 | Optional 1,000-character note, no cover letter; "complete profile" means full name plus Resume |
 | A-5 | FR-A3-3 | Re-apply allowed after withdrawal while the Posting is Live; never after rejection or a declined offer |

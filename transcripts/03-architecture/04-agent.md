@@ -1,0 +1,1 @@
+Lint is clean. The spine body is about 2,400 words, which is over the two-page target, so I will cut after the reviewers report. Six reconcile and review agents are running in parallel now; I'll apply their fixes when they return.

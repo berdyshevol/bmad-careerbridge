@@ -209,3 +209,25 @@ Questions: **(h)** Stage history read from the audit table rather than stored tw
 Answer these and I finalize: distill the spine, reconcile against the PRD, run the reviewer gate, write the rationale section for Dr. Ren.
 
 <!-- turn 03 · 2026-09-05 20:43 · 141s · agent turns 3 · in 66 + cache 175367 / out 9590 tok · $2.0099417500000003 -->
+
+
+## Turn 04 — Oleg
+
+Answers, then finalize.
+
+**Decision 4.** (a) Yes: server-side session in Postgres, HTTP-only SameSite cookie, rolling 8-hour expiry, bcrypt; single origin with the API under `/api`, Vite proxy in dev, Express serving the built client in prod. The "actor as first argument of every use-case module" rule and "Organization is a mandatory WHERE parameter in recruiter-facing repository queries" are the two rules I want written as checkable rules in the spine — they are how we will *prove* FR-R3-3 in the demo. (b) **403 per the PRD, plus UUIDs.** I do not want to reopen a PRD decision from the architecture document; if Dr. Ren prefers hiding existence we change one line later.
+
+**Decision 5.** (c) Yes, pure transition modules in the business layer, database checks values only. (d) Yes, expiry computed on read, no scheduler — and please make the single "effectively Live" predicate an explicit rule, because the first bug in week seven will be a list that forgot it. (e) Yes, no event bus; Notifications written inside the use-case transaction. Record the event-bus prohibition the same way as the state-library one.
+
+**Decision 6.** (f) Yes: Render web service + Neon, Cloud Run as the named alternative, one Docker image configured by environment variables, and an explicit request for Render's approval in the rationale section. (g) **Pushback on resumes as `bytea`.** Neon's free tier is about 0.5 GB of storage. At the PRD's 5 MB per file, one hundred resumes fill it — and our demo data plus five developers testing uploads will get there faster than you think. Two options: lower the cap to 2 MB and accept that the limit is a known risk for the semester, or use object storage now. I lean **`bytea` with a 2 MB cap and the storage limit recorded as a named risk with object storage as the escape hatch** — it keeps one connection string, which matters more to a student team than elegance. Adjust the PRD assumption A-2 via the addendum note; I will confirm with the team.
+
+**Decision 7.** (h) Stage history read from the audit table — yes, but record it as a conscious trade-off: it couples the applicant-facing history to the audit format. Acceptable for one semester because it removes a whole table and a class of "two sources disagree" bugs. (i) Yes, trigger, not convention. (j) Two team instincts you should pre-empt in the spine, because someone will propose each by week six: a JWT in localStorage "because that is what the tutorial did", and an in-process event emitter for notifications. You have already answered both; just make them explicit "we decided against" lines with the reason.
+
+Now finalize: distill the spine (only conflict-if-independent decisions, ARCH-nn IDs), reconcile against the PRD, run the reviewer gate, and write the **stack rationale section for Dr. Ren** — Node/React/JavaScript-not-TypeScript instead of Maven/JUnit, PostgreSQL derived from the PRD rules, Jest, Render + Neon with the approval request. Local files only, no external handoffs. Tell me the final paths and what BMAD recommends next.
+
+
+## Turn 04 — Agent
+
+Lint is clean. The spine body is about 2,400 words, which is over the two-page target, so I will cut after the reviewers report. Six reconcile and review agents are running in parallel now; I'll apply their fixes when they return.
+
+<!-- turn 04 · 2026-09-05 20:46 · 1560s · agent turns 13 · in 162 + cache 491255 / out 21554 tok · $24.96200375 -->
